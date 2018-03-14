@@ -1,0 +1,13 @@
+cc283f3d60cd483683c10fa9eb1da298 *DESCRIPTION
+1307210b722bf862d29e41fa82278abe *NAMESPACE
+10a28dc97c03cc61a8642397e2f8370e *R/RLearner_classif_tuneRanger.R
+4142755291ded88a28504abc1b0a21b6 *R/RLearner_regr_tuneRanger.R
+9e5ac03a3eea979eef9c5c45f3566338 *R/estimateTimeTuneRanger.R
+58711c51f5618026c0a0229df0fab8c6 *R/restartTuneRanger.R
+42b7100bc2ccb53fd06d6ba0eba25cfe *R/tuneRanger.R
+34372dbcbdfd9b2ebbb8a3a4c230be91 *README.md
+8f749e203a468bf588c9780b95f6091a *man/estimateTimeTuneRanger.Rd
+9ff2d5e743b2c390e2f989c8cee8c719 *man/restartTuneRanger.Rd
+f06ad4db533c42c611a46a740ef9c3a9 *man/tuneRanger.Rd
+37352f2e36f776f8fbb5b9c286435645 *tests/testthat.R
+918572889237762b6ed2ad6cb623dc4f *tests/testthat/test_base.R
