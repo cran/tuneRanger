@@ -8,12 +8,12 @@ tuneRanger(task, measure = NULL, iters = 70, iters.warmup = 30,
   num.threads = NULL, num.trees = 1000, parameters = list(replace = FALSE,
   respect.unordered.factors = "order"), tune.parameters = c("mtry",
   "min.node.size", "sample.fraction"), save.file.path = NULL,
-  build.final.model = TRUE)
+  build.final.model = TRUE, show.info = getOption("mlrMBO.show.info", TRUE))
 }
 \arguments{
 \item{task}{The mlr task created by \code{\link[mlr]{makeClassifTask}} or \code{\link[mlr]{makeRegrTask}}.}
 
-\item{measure}{Performance measure to evaluate. Default is auc for classification and mse for regression. Other possible performance measures can be looked up here: https://mlr-org.github.io/mlr-tutorial/release/html/performance/index.html}
+\item{measure}{Performance measure to evaluate/optimize. Default is brier score for classification and mse for regression. Can be changed to accuracy, AUC or logaritmic loss by setting it to \code{list(acc)}, \code{list(auc)} or \code{list(logloss)}. Other possible performance measures from mlr can be looked up here: \url{https://mlr-org.github.io/mlr-tutorial/release/html/performance/index.html}}
 
 \item{iters}{Number of iterations. Default is 70.}
 
@@ -36,6 +36,8 @@ started again with \code{\link{restartTuneRanger}}.}
 \item{build.final.model}{[\code{logical(1)}]\cr
 Should the best found model be fitted on the complete dataset?
 Default is \code{TRUE}.}
+
+\item{show.info}{Verbose mlrMBO output on console? Default is \code{TRUE}.}
 }
 \value{
 list with recommended parameters and a data.frame with all evaluated hyperparameters and performance and time results for each run
@@ -65,7 +67,9 @@ res = tuneRanger(iris.task, measure = list(multiclass.brier), num.trees = 1000,
 # Mean of best 5 \% of the results
 res
 # Model with the new tuned hyperparameters
-res$model}
+res$model
+# Prediction
+predict(res$model, newdata = iris[1:10,])}
 }
 \seealso{
 \code{\link{estimateTimeTuneRanger}} for time estimation and \code{\link{restartTuneRanger}} for continuing the algorithm if there was an error.

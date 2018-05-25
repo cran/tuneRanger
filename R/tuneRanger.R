@@ -3,7 +3,7 @@
 #' Automatic tuning of random forests of the \code{\link[ranger]{ranger}} package with one line of code. 
 #'
 #' @param task The mlr task created by \code{\link[mlr]{makeClassifTask}} or \code{\link[mlr]{makeRegrTask}}. 
-#' @param measure Performance measure to evaluate. Default is auc for classification and mse for regression. Other possible performance measures can be looked up here: https://mlr-org.github.io/mlr-tutorial/release/html/performance/index.html
+#' @param measure Performance measure to evaluate/optimize. Default is brier score for classification and mse for regression. Can be changed to accuracy, AUC or logaritmic loss by setting it to \code{list(acc)}, \code{list(auc)} or \code{list(logloss)}. Other possible performance measures from mlr can be looked up here: \url{https://mlr-org.github.io/mlr-tutorial/release/html/performance/index.html}
 #' @param iters Number of iterations. Default is 70.
 #' @param iters.warmup Number of iterations for the warmup. Default is 30. 
 #' @param num.threads Number of threads. Default is number of CPUs available.
@@ -18,6 +18,7 @@
 #' @param build.final.model [\code{logical(1)}]\cr
 #'   Should the best found model be fitted on the complete dataset?
 #'   Default is \code{TRUE}. 
+#' @param show.info Verbose mlrMBO output on console? Default is \code{TRUE}.
 #' @import ranger mlr mlrMBO ParamHelpers BBmisc stats smoof lhs parallel
 #' @importFrom DiceKriging km predict.km
 #' @return list with recommended parameters and a data.frame with all evaluated hyperparameters and performance and time results for each run
@@ -43,11 +44,13 @@
 #' # Mean of best 5 % of the results
 #' res
 #' # Model with the new tuned hyperparameters
-#' res$model}
+#' res$model
+#' # Prediction
+#' predict(res$model, newdata = iris[1:10,])}
 tuneRanger = function(task, measure = NULL, iters = 70, iters.warmup = 30, num.threads = NULL, num.trees = 1000, 
   parameters = list(replace = FALSE, respect.unordered.factors = "order"), 
   tune.parameters = c("mtry", "min.node.size", "sample.fraction"), save.file.path = NULL,
-  build.final.model = TRUE) {
+  build.final.model = TRUE, show.info = getOption("mlrMBO.show.info", TRUE)) {
   
   if(is.null(save.file.path)) {
     save.on.disk.at = NULL
@@ -151,7 +154,7 @@ tuneRanger = function(task, measure = NULL, iters = 70, iters.warmup = 30, num.t
   mbo.learner = makeLearner("regr.km", covtype = "matern3_2", optim.method = "BFGS", nugget.estim = TRUE, 
     jitter = TRUE, predict.type = "se", config = list(show.learner.output = FALSE))
   
-  result = mbo(fun = objFun, design = design, learner = mbo.learner, control = control)
+  result = mbo(fun = objFun, design = design, learner = mbo.learner, control = control, show.info = show.info)
   
   res = data.frame(result$opt.path)
   if("min.node.size" %in% tune.parameters)
