@@ -5,19 +5,22 @@
 \title{tuneRanger}
 \usage{
 tuneRanger(task, measure = NULL, iters = 70, iters.warmup = 30,
-  num.threads = NULL, num.trees = 1000, parameters = list(replace = FALSE,
-  respect.unordered.factors = "order"), tune.parameters = c("mtry",
-  "min.node.size", "sample.fraction"), save.file.path = NULL,
-  build.final.model = TRUE, show.info = getOption("mlrMBO.show.info", TRUE))
+  time.budget = NULL, num.threads = NULL, num.trees = 1000,
+  parameters = list(replace = FALSE, respect.unordered.factors = "order"),
+  tune.parameters = c("mtry", "min.node.size", "sample.fraction"),
+  save.file.path = NULL, build.final.model = TRUE,
+  show.info = getOption("mlrMBO.show.info", TRUE))
 }
 \arguments{
 \item{task}{The mlr task created by \code{\link[mlr]{makeClassifTask}} or \code{\link[mlr]{makeRegrTask}}.}
 
-\item{measure}{Performance measure to evaluate/optimize. Default is brier score for classification and mse for regression. Can be changed to accuracy, AUC or logaritmic loss by setting it to \code{list(acc)}, \code{list(auc)} or \code{list(logloss)}. Other possible performance measures from mlr can be looked up here: \url{https://mlr-org.github.io/mlr-tutorial/release/html/performance/index.html}}
+\item{measure}{Performance measure to evaluate/optimize. Default is brier score for classification and mse for regression. Can be changed to accuracy, AUC or logaritmic loss by setting it to \code{list(acc)}, \code{list(auc)} or \code{list(logloss)}. Other possible performance measures from mlr can be looked up in the \href{https://mlr-org.github.io/mlr/articles/measures.html}{mlr tutorial}.}
 
 \item{iters}{Number of iterations. Default is 70.}
 
 \item{iters.warmup}{Number of iterations for the warmup. Default is 30.}
+
+\item{time.budget}{Running time budget in seconds. Note that the actual mbo run can take more time since the condition is checked after each iteration. The default NULL means: There is no time budget.}
 
 \item{num.threads}{Number of threads. Default is number of CPUs available.}
 
@@ -40,14 +43,17 @@ Default is \code{TRUE}.}
 \item{show.info}{Verbose mlrMBO output on console? Default is \code{TRUE}.}
 }
 \value{
-list with recommended parameters and a data.frame with all evaluated hyperparameters and performance and time results for each run
+A list with elements
+  \item{\code{recommended.pars}}{Recommended hyperparameters.}
+  \item{\code{results}}{A data.frame with all evaluated hyperparameters and performance and time results for each run.}
+  \item{\code{model}}{The final model if \code{build.final.model} set to TRUE.}
 }
 \description{
 Automatic tuning of random forests of the \code{\link[ranger]{ranger}} package with one line of code.
 }
 \details{
 Model based optimization is used as tuning strategy and the three parameters min.node.size, sample.fraction and mtry are tuned at once. Out-of-bag predictions are used for evaluation, which makes it much faster than other packages and tuning strategies that use for example 5-fold cross-validation. Classification as well as regression is supported. 
-The measure that should be optimized can be chosen from the list of measures in mlr: http://mlr-org.github.io/mlr-tutorial/devel/html/measures/index.html
+The measure that should be optimized can be chosen from the list of measures in mlr: \href{https://mlr-org.github.io/mlr/articles/measures.html}{mlr tutorial}
 }
 \examples{
 \dontrun{
